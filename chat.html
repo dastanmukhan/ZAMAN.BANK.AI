@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zaman AI — чат</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{ --green:#26DCC2; --lime:#F7FF75; --ink:#0A2B23; }
+  body{ background: radial-gradient(100% 140% at 10% -20%, #fff 0%, #ECFFFB 50%, #fff 100%); color:var(--ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+  .glass{ background:rgba(255,255,255,.82); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,.98); box-shadow:0 20px 60px rgba(0,0,0,.08); }
+  .btn{ background:linear-gradient(90deg,var(--green),var(--lime)); color:#05372E; font-weight:700; border-radius:999px; border:1px solid rgba(255,255,255,.95); box-shadow:0 6px 16px rgba(38,220,194,.25); }
+  /* голосовая кнопка + волны */
+  .mic{ position:relative; width:54px; height:54px; border-radius:999px; display:grid; place-items:center; background:radial-gradient(circle at 30% 30%, #fff, #10cbb0); color:#fff; box-shadow:0 12px 28px rgba(16,203,176,.35); cursor:pointer; }
+  .mic::after, .mic::before{ content:""; position:absolute; inset:-6px; border-radius:999px; border:2px solid rgba(16,203,176,.35); opacity:0; }
+  .mic.rec::before{ animation:ping 1.5s ease-out infinite; }
+  .mic.rec::after{ animation:ping 1.5s .75s ease-out infinite; }
+  @keyframes ping{ 0%{transform:scale(1);opacity:.7;} 100%{transform:scale(1.5);opacity:0;} }
+  .wave{ height:50px; overflow:hidden; opacity:.65; }
+  .wave svg path{ stroke:rgba(16,203,176,.8); stroke-width:2; fill:none; stroke-linecap:round; animation:flow 3s linear infinite; }
+  @keyframes flow{ to{ transform:translateX(-50%); } }
+</style>
+</head>
+<body class="min-h-screen">
+  <header class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="index.html" class="rounded-full px-4 py-2 border border-black/5 bg-white/80 hover:bg-white">← На главную</a>
+    <div class="text-sm opacity-70">RU · KZ · EN</div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pb-8 grid lg:grid-cols-[360px_1fr] gap-6">
+    <!-- боковая панель -->
+    <aside class="glass rounded-2xl p-4">
+      <div class="font-bold">ZAMAN AI</div>
+      <div class="text-xs opacity-70">Халяль-навигатор по финансам</div>
+      <hr class="my-4 border-black/5">
+      <div class="space-y-2 text-sm">
+        <button class="w-full rounded-lg px-3 py-2 hover:bg-black/5">Новый диалог</button>
+        <button class="w-full rounded-lg px-3 py-2 hover:bg-black/5">Цели и мечты</button>
+        <button class="w-full rounded-lg px-3 py-2 hover:bg-black/5">Анализ расходов</button>
+        <button class="w-full rounded-lg px-3 py-2 hover:bg-black/5">Подбор халяль-продуктов</button>
+      </div>
+      <div class="mt-6">
+        <div class="text-xs opacity-70 mb-2">Голосовой режим</div>
+        <div id="mic" class="mic">🎤</div>
+      </div>
+      <div class="wave mt-4">
+        <svg viewBox="0 0 600 50" preserveAspectRatio="none">
+          <path d="M0,25 C60,0 120,50 180,25 S300,25 360,25 480,50 540,25 600,25 660,25" />
+        </svg>
+      </div>
+    </aside>
+
+    <!-- чат -->
+    <section class="glass rounded-2xl p-4 flex flex-col min-h-[70vh]">
+      <div id="stream" class="text-xs px-2 py-1 rounded bg-black/5 self-start hidden"></div>
+
+      <div id="list" class="flex-1 overflow-y-auto space-y-3 p-2">
+        <div class="flex justify-start">
+          <div class="max-w-[80%] rounded-2xl px-3 py-2 bg-white/90 border border-white">
+            Привет! Я Zaman AI. Сформируем цель или разберём расходы? Могу говорить или печатать ✨
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3 flex items-center gap-2">
+        <input id="msg" class="flex-1 rounded-xl px-3 py-3 bg-white/90 border border-black/5 outline-none" placeholder="Напишите или скажите...">
+        <button id="send" class="btn px-5 py-3 rounded-xl">Отправить</button>
+      </div>
+    </section>
+  </main>
+
+<script>
+  // мок-голос — просто индикация
+  const mic = document.getElementById('mic');
+  const stream = document.getElementById('stream');
+  let recording = false;
+  mic.onclick = async () => {
+    recording = !recording;
+    mic.classList.toggle('rec', recording);
+    if (recording) {
+      stream.classList.remove('hidden');
+      stream.textContent = 'Слушаю… говорите (мок)';
+    } else {
+      stream.textContent = 'Расшифровка завершена (мок)';
+      setTimeout(()=>stream.classList.add('hidden'), 900);
+    }
+  };
+
+  // чат
+  const list = document.getElementById('list');
+  const msg = document.getElementById('msg');
+  const send = document.getElementById('send');
+
+  function bubble(role, text){
+    const wrap = document.createElement('div');
+    wrap.className = 'flex ' + (role==='assistant' ? 'justify-start' : 'justify-end');
+    const b = document.createElement('div');
+    b.className = 'max-w-[80%] rounded-2xl px-3 py-2 ' + (role==='assistant' ? 'bg-white/90 border border-white' : 'bg-white/90 border border-white');
+    b.textContent = text; wrap.appendChild(b); list.appendChild(wrap); list.scrollTop = list.scrollHeight;
+  }
+
+  function reply(t){
+    t = t.toLowerCase();
+    if (t.includes('цель') || t.includes('квартир')) return 'Оценю стоимость мечты, срок и ежемесячный взнос. Готов показать таймлайн и халяль-депозит.';
+    if (t.includes('траты') || t.includes('расход')) return 'Разберу выписку: категории, аномалии, советы по экономии.';
+    if (t.includes('депозит') || t.includes('продукт')) return 'Подберу халяль-депозиты и финансирование под твой горизонт.';
+    if (t.includes('стресс')) return 'Попробуй дыхание 4-7-8 и 10-минутную прогулку. Могу напомнить вечером.';
+    return 'Я помогу с целями, расходами и халяль-продуктами. С чего начнём?';
+  }
+
+  send.onclick = () => {
+    const v = msg.value.trim(); if (!v) return;
+    bubble('user', v); msg.value='';
+    setTimeout(()=> bubble('assistant', reply(v)), 250);
+  };
+  msg.addEventListener('keydown', e => { if (e.key === 'Enter') send.click(); });
+</script>
+</body>
+</html>

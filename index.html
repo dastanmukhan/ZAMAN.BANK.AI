@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+  <meta name="turbo-cache-control" content="no-cache">
+
+  <!-- Иконки Zaman -->
+  <link rel="icon" type="image/png" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/favicon-96x96.png" sizes="96x96"/>
+  <link rel="icon" type="image/svg+xml" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/favicon.svg"/>
+  <link rel="shortcut icon" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/favicon.ico"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/apple-touch-icon.png"/>
+  <link rel="manifest" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/site.webmanifest"/>
+  <title>ZAMAN AI — халяль-банкинг нового поколения</title>
+
+  <!-- их css (опционально) -->
+  <link rel="stylesheet" href="https://new.zamanbank.kz/themes/zaman/assets/build/assets/css-Dt_kdDKu.css">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root{
+      --bg-0:#ffffff; --bg-1:#F5FFFB; --green:#26DCC2; --lime:#F7FF75;
+      --ink:#0B2A23; --shadow:rgba(0,0,0,.07); --ring:rgba(12,42,35,.08);
+      /* для стека карт */
+      --radius:22px; --cardW:540px; --cardH:320px;
+    }
+    html,body{height:100%}
+    body{
+      /* FIX: убрали отрицательный offset в radial-gradient (at 10% 0%) */
+      background: radial-gradient(160% 120% at 10% 0%, var(--bg-0) 10%, var(--bg-1) 60%, var(--bg-0) 100%);
+      color:var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+
+    /* ===== Glass / Chips ===== */
+    .glass{ background:rgba(255,255,255,.78); border:1px solid rgba(255,255,255,.98); backdrop-filter: blur(22px); box-shadow:0 12px 26px var(--shadow); }
+    .glass-weak{ background:rgba(255,255,255,.6); border:1px solid rgba(255,255,255,.9); backdrop-filter: blur(14px); box-shadow:0 8px 18px var(--shadow); }
+    .chip{ display:inline-flex; align-items:center; gap:.5rem; padding:.45rem .75rem; border-radius:999px; border:1px solid var(--ring); background:rgba(255,255,255,.88); font-size:.78rem; }
+
+    /* ===== Header ===== */
+    .nav-wrap{ position:sticky; top:0; z-index:40; }
+    .nav{ border-radius:18px; padding:.7rem 1rem; }
+    .wordmark span:first-child{ letter-spacing:.18em; font-weight:800; font-size:15px; }
+    .wordmark span:last-child{ letter-spacing:.28em; font-size:12px; color:var(--green); font-weight:700; }
+
+    /* ===== Hero copy ===== */
+    .hero-copy{ position:relative; isolation:isolate; }
+    .hero-copy::before{
+      content:""; position:absolute; inset:-18px -26px; z-index:-1; border-radius:32px;
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.80));
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,.06));
+    }
+    .headline{ font-weight:900; font-size:clamp(34px,5.2vw,64px); line-height:1.04; letter-spacing:-.01em; text-wrap:balance; }
+    .headline strong{ background:linear-gradient(90deg,var(--green),var(--lime)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .subline{ font-size:clamp(15px,1.35vw,18px); opacity:.92 }
+
+    /* ===== Buttons ===== */
+    .btn-solid{ background:linear-gradient(90deg,var(--green),var(--lime)); color:#05372E; font-weight:700; border-radius:999px; border:1px solid rgba(255,255,255,.95); box-shadow:0 6px 16px rgba(38,220,194,.25); transition:transform .18s ease, box-shadow .18s ease; }
+    .btn-solid:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(38,220,194,.34); }
+    .btn-ghost{ background:rgba(255,255,255,.92); color:var(--ink); font-weight:600; border-radius:999px; border:1px solid var(--ring); box-shadow:0 4px 12px rgba(0,0,0,.04); transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
+    .btn-ghost:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.06); background:#fff; }
+
+    /* ===== Right Dock ===== */
+    #chatDock{ position:fixed; right:22px; top:50%; transform:translateY(-50%); z-index:50; }
+    #chatDock .pill{
+      display:flex; flex-direction:column; align-items:center; gap:.5rem;
+      width:58px; padding:14px 10px; border-radius:999px; cursor:pointer;
+      background:linear-gradient(180deg,#ffffffee,#ffffffcc); border:1px solid rgba(0,0,0,.05);
+      box-shadow:0 8px 26px rgba(0,0,0,.06), 0 0 0 6px rgba(38,220,194,.10);
+      transition:transform .22s ease, box-shadow .22s ease;
+    }
+    #chatDock .pill:hover{ transform:translateX(-2px); box-shadow:0 12px 34px rgba(0,0,0,.08), 0 0 0 8px rgba(38,220,194,.14); }
+    #chatDock .dot{ height:28px; width:28px; border-radius:50%; display:grid; place-items:center; color:#fff; background: radial-gradient(circle at 30% 30%, #ffffff 0%, #11cbb0 100%); }
+    #chatDock .label{ writing-mode:vertical-rl; transform:rotate(180deg); letter-spacing:.12em; font-weight:800; font-size:.72rem; color:#05372E; }
+
+    /* ===== Мини-чат ===== */
+    #chatBox{ transform-origin:100% 60%; opacity:0; transform:scale(.92) translateY(8px); clip-path:inset(12% 12% 12% 12% round 18px); transition:opacity .36s ease, transform .36s ease, clip-path .46s cubic-bezier(.2,.8,.2,1); }
+    #chatBox.open{ opacity:1; transform:scale(1) translateY(0); clip-path:inset(0 0 0 0 round 18px); box-shadow:0 20px 60px rgba(0,0,0,.12), 0 0 60px rgba(38,220,194,.24); }
+
+    /* ===== Reveal/bg ===== */
+    .reveal{ opacity:0; transform:translateY(16px); transition: all .6s ease-out; } .reveal.show{ opacity:1; transform:none; }
+    #space{ position:fixed; inset:0; z-index:-2; filter:contrast(105%) brightness(106%); }
+    .bg-orbs:before,.bg-orbs:after{ content:""; position:fixed; z-index:-3; width:70vmax; height:70vmax; border-radius:50%; filter: blur(85px); opacity:.28; pointer-events:none; }
+    .bg-orbs:before{ background:radial-gradient(closest-side, var(--green), transparent 60%); left:-10vmax; top:-10vmax; }
+    .bg-orbs:after{ background:radial-gradient(closest-side, var(--lime), transparent 60%); right:-10vmax; bottom:-10vmax; }
+
+    @media (max-width:860px){ .hero-copy::before{ inset:-12px -14px; } #chatDock{ right:12px; } }
+
+    /* ===================== СТЕК КАРТ С ЛОГОТИПАМИ ===================== */
+    .stack{ position:relative; width:min(92vw,var(--cardW)); height:clamp(300px, 48vw, calc(var(--cardH) + 120px)); padding-top:92px; margin-inline:auto; }
+    .card{ position:absolute; inset:auto 0 0 0; margin:auto; width:100%; height:var(--cardH); border-radius:var(--radius);
+      padding:26px; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; justify-content:space-between;
+      transform-origin:center bottom; transition:transform .35s cubic-bezier(.2,.6,.2,1), box-shadow .35s, z-index 0s .35s, filter .35s; cursor:pointer;
+      box-shadow:0 16px 40px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.06); }
+    .card.top{ z-index:3; top:0px } .card.mid{ z-index:2; top:46px } .card.bottom{ z-index:1; top:92px }
+    .card:hover{ z-index:99; transform:translateY(-12px) scale(1.03); box-shadow:0 32px 80px rgba(0,0,0,.22), 0 0 0 1px #fff2 inset; filter:saturate(1.06); transition:transform .35s cubic-bezier(.2,.6,.2,1), box-shadow .35s, z-index 0s; }
+
+    .row{ display:flex; align-items:center; gap:12px }
+    .badge{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; padding:9px 14px; border-radius:999px; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.10); }
+    .brand{ margin-left:auto; font-weight:700; letter-spacing:.06em; opacity:.9 }
+    .label{ font-size:12px; color:#eef; letter-spacing:.18em; opacity:.8 }
+    .holder{ font-size:26px; font-weight:800; letter-spacing:.02em; margin-top:6px }
+    .number{ font-size:16px; letter-spacing:.28em; margin-top:6px; opacity:.95 }
+    .chip{ width:38px; height:28px; border-radius:6px; background:linear-gradient(180deg,#dfe5ee,#a8b0bd); box-shadow:inset 0 0 0 1px rgba(0,0,0,.2), 0 6px 14px rgba(0,0,0,.2); }
+
+    /* FIX: корректные color-stops для «холо» */
+    .holo{
+      width:14px; height:14px; border-radius:50%; margin-left:6px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.8) 0%, rgba(255,255,255,.8) 40%, transparent 41%),
+        conic-gradient(from 0deg, #ffff00, #00ffff, #ff00ff, #ffff00);
+      filter:saturate(.95) brightness(.98); opacity:.9;
+    }
+
+    .emblem{ position:absolute; top:18px; right:18px; width:72px; height:72px; border-radius:50%; display:grid; place-items:center; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18), 0 8px 18px rgba(0,0,0,.18); backdrop-filter:blur(4px); }
+    .emblem svg{ width:48px; height:48px; opacity:.9; }
+    .mark{ position:absolute; inset:auto -40px -40px auto; right:-24px; bottom:-24px; width:320px; height:320px; opacity:.10; pointer-events:none; filter:drop-shadow(0 10px 20px rgba(0,0,0,.2)); }
+    .divider{ height:1px; width:100%; background:linear-gradient(90deg,#ffffff33,#ffffff11,#0000); margin:.2rem 0 .6rem; opacity:.7 }
+
+    /* Темы карт */
+    .theme-neon{ color:#E8FFF3; background:radial-gradient(120% 100% at 100% 0%, #00ff8a18 0%, #0000 40%), radial-gradient(120% 110% at 0% 100%, #00ff6a22 0%, #0000 58%), linear-gradient(135deg,#072e22,#041a14 68%); outline:1px solid #00f08a66; box-shadow:0 10px 38px #00ff8a22, inset 0 0 30px #00ff7a11, inset 0 0 120px #00ff7a08; }
+    .theme-neon .badge{ border-color:#00ffb055; background:#00ff8a13; color:#9bffd1 }
+    .theme-neon .holder{ text-shadow:0 0 16px #00ff8a55 }
+
+    .theme-black{ color:#e9edf1; background:radial-gradient(100% 140% at 0% 0%, #ffffff09 0%, #0000 38%), linear-gradient(160deg,#0e1013,#121418 40%,#0b0c0e 100%); }
+    .theme-black .badge{ background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.12); color:#ccd2d9 }
+
+    .theme-mint{ color:#123a22; background:radial-gradient(120% 80% at 90% 0%, #ffffffaa 0%, #ffffff30 38%, #ffffff00 60%), linear-gradient(140deg,#b7f6c8,#a0f0b8 40%, #7ee6a3 100%); box-shadow:0 18px 42px rgba(56,140,86,.18), inset 0 0 0 1px rgba(0,0,0,.06); }
+    .theme-mint .badge{ background:#ffffff66; border-color:#ffffffaa; color:#215b37 }
+    .theme-mint .chip{ background:linear-gradient(180deg,#f2f7fb,#c9d2dd) }
+  </style>
+</head>
+
+<body>
+  <canvas id="space"></canvas>
+  <div class="bg-orbs selection:bg-[var(--green)]/20">
+
+    <!-- Спрайт логотипов для карт -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <symbol id="icon-mountain" viewBox="0 0 64 64">
+          <path d="M6 50 L26 22 L34 32 L40 26 L58 50 Z" fill="currentColor"/>
+          <path d="M26 22 L30 28 L34 24 L37 28 L40 26" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-eagle" viewBox="0 0 64 64">
+          <path d="M6 34c12-6 22-14 32-26 2 8 2 14-2 20 6-1 12-1 20-4-6 10-15 16-28 20-6 2-10 1-16-2 2-2 4-4 6-8-4 0-8 0-12 0z" fill="currentColor"/>
+          <circle cx="36" cy="16" r="2.5" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-leaf" viewBox="0 0 64 64">
+          <path d="M10 46c18-2 32-10 42-32 4 18-6 36-22 40-8 2-14 0-20-8z" fill="currentColor"/>
+          <path d="M12 44c10-2 20-10 28-20M20 48c6-4 14-10 20-20" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- NAV -->
+    <header class="nav-wrap">
+      <div class="glass nav mx-auto max-w-7xl mt-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <img src="https://new.zamanbank.kz/themes/zaman/assets/favicon/favicon.svg" class="h-9 w-9 rounded-xl bg-[var(--green)] p-2 ring-2 ring-[var(--lime)]/60" alt="Zaman">
+          <div class="wordmark flex items-baseline gap-1"><span>ZAMAN</span><span>AI</span></div>
+          <span class="chip hidden md:inline-flex">Халяль-банкинг нового поколения</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-2 text-emerald-900/85">
+          <button class="rounded-full px-3 py-2 hover:bg-black/5">Частным клиентам ▾</button>
+          <button class="rounded-full px-3 py-2 hover:bg-black/5">Бизнесу ▾</button>
+          <button class="rounded-full px-3 py-2 hover:bg-black/5">Исламские финансы ▾</button>
+          <button class="rounded-full px-3 py-2 hover:bg-black/5">О банке ▾</button>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="https://play.google.com/store/apps/details?id=com.zaman.bank" class="glass-weak rounded-full px-3 py-2 text-sm">Приложение</a>
+          <button class="btn-solid px-5 py-2 text-sm">Оформить карту</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="mx-auto max-w-7xl px-4 md:px-6 py-10 md:py-14 grid lg:grid-cols-2 gap-10 items-center">
+      <!-- ЛЕВАЯ КОЛОНКА -->
+      <div class="hero-copy">
+        <div class="mb-4 flex flex-wrap items-center gap-2">
+          <span class="chip">Шариатские принципы</span>
+          <span class="chip">Голос · Текст · RU/KZ/EN</span>
+        </div>
+
+        <h1 class="headline">
+          <strong>ZAMAN AI</strong> — ваш&nbsp;халяль-навигатор по&nbsp;финансам
+        </h1>
+        <p class="subline mt-4 max-w-xl">
+          Вместо сложного банка — диалог. Ставим цели, меняем привычки, подбираем халяль-решения и ведём к результату.
+        </p>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="chat.html" class="btn-solid inline-flex items-center gap-2 px-6 py-3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z"/></svg>
+            Начать разговор
+          </a>
+          <button class="btn-ghost px-6 py-3">Оформить онлайн</button>
+          <button class="btn-ghost px-6 py-3">RU / KZ / EN</button>
+        </div>
+
+        <div id="quick" class="mt-5 flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- ПРАВАЯ КОЛОНКА — СТЕК КАРТ -->
+      <div class="relative">
+        <section class="stack">
+          <!-- NEON + MOUNTAIN -->
+          <article class="card theme-neon top">
+            <div class="row">
+              <span class="badge">PLATINUM</span>
+              <span class="brand">ZAMAN BANK</span>
+            </div>
+            <div class="row"><div class="chip"></div><div class="holo"></div></div>
+
+            <div class="divider"></div>
+            <div>
+              <div class="label">CARD HOLDER</div>
+              <div class="holder">ZAMAN USER</div>
+              <div class="number">**** **** **** 5284</div>
+            </div>
+
+            <div class="emblem" style="background:linear-gradient(180deg,#00ff8a22,#00e07a10)">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#icon-mountain"/></svg>
+            </div>
+            <svg class="mark" viewBox="0 0 64 64" aria-hidden="true" style="color:#8dffcc">
+              <use href="#icon-mountain"/>
+            </svg>
+          </article>
+
+          <!-- BLACK + EAGLE -->
+          <article class="card theme-black mid">
+            <div class="row">
+              <span class="badge">ZAMAN BANK</span>
+              <span class="brand">PLATINUM</span>
+            </div>
+            <div class="row"><div class="chip"></div><div class="holo"></div></div>
+
+            <div class="divider"></div>
+            <div>
+              <div class="label">CARD HOLDER</div>
+              <div class="holder">ZAMAN USER</div>
+              <div class="number">**** **** **** 5284</div>
+            </div>
+
+            <div class="emblem" style="background:linear-gradient(180deg,#ffffff22,#ffffff08)">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#icon-eagle"/></svg>
+            </div>
+            <svg class="mark" viewBox="0 0 64 64" aria-hidden="true" style="color:#cfd6dd">
+              <use href="#icon-eagle"/>
+            </svg>
+          </article>
+
+          <!-- MINT + LEAF -->
+          <article class="card theme-mint bottom">
+            <div class="row">
+              <span class="badge">ZAMAN BANK</span>
+              <span class="brand">DEBIT</span>
+            </div>
+            <div class="row"><div class="chip"></div><div class="holo"></div></div>
+
+            <div class="divider"></div>
+            <div>
+              <div class="label">CARD HOLDER</div>
+              <div class="holder">ZAMAN USER</div>
+              <div class="number">**** **** **** 5284</div>
+            </div>
+
+            <div class="emblem" style="background:linear-gradient(180deg,#ffffffaa,#ffffff55)">
+              <svg viewBox="0 0 64 64" aria-hidden="true" style="color:#1f6b3f"><use href="#icon-leaf"/></svg>
+            </div>
+            <svg class="mark" viewBox="0 0 64 64" aria-hidden="true" style="color:#1f6b3f">
+              <use href="#icon-leaf"/>
+            </svg>
+          </article>
+        </section>
+      </div>
+    </section>
+
+    <!-- Быстрые действия -->
+    <section class="reveal mx-auto max-w-7xl px-4 md:px-6 py-10">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <button class="glass-weak rounded-2xl py-4 hover:shadow">💳 Пополнить</button>
+        <button class="glass-weak rounded-2xl py-4 hover:shadow">🔁 Перевести</button>
+        <button class="glass-weak rounded-2xl py-4 hover:shadow">🎯 Цели</button>
+        <button class="glass-weak rounded-2xl py-4 hover:shadow">📈 Инвестиции</button>
+        <button class="glass-weak rounded-2xl py-4 hover:shadow">🛡️ Халяль-продукты</button>
+      </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="reveal mx-auto max-w-7xl px-4 md:px-6 py-12 text-emerald-900/90">
+      <div class="glass rounded-2xl p-6 grid md:grid-cols-4 gap-6">
+        <div>
+          <div class="font-bold text-lg text-emerald-800">ZAMAN AI</div>
+          <p class="mt-1 text-sm">Прототип HackNU/25 — голосовой и текстовый ассистент халяль-банкинга.</p>
+        </div>
+        <div>
+          <div class="font-semibold">Исламские финансы</div>
+          <ul class="mt-1 space-y-1 text-sm">
+            <li>Глоссарий</li><li>FAQ</li><li>Принципы шариата</li>
+          </ul>
+        </div>
+        <div>
+          <div class="font-semibold">Продукты</div>
+          <ul class="mt-1 space-y-1 text-sm">
+            <li>Карты</li><li>Депозиты</li><li>Финансирование</li><li>Инвестиции</li>
+          </ul>
+        </div>
+        <div>
+          <div class="font-semibold">Приложение</div>
+          <div class="flex gap-2 mt-1">
+            <a class="glass-weak h-10 w-28 rounded-lg grid place-items-center text-xs" href="https://play.google.com/store/apps/details?id=com.zaman.bank">Google Play</a>
+            <a class="glass-weak h-10 w-28 rounded-lg grid place-items-center text-xs" href="https://apps.apple.com/kz/app/zaman-bank/id6743857855">App Store</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ПРАВЫЙ ДОК -->
+    <aside id="chatDock">
+      <div id="chatLauncher" class="pill">
+        <div class="dot">✨</div>
+        <div class="label">ZAMAN&nbsp;AI</div>
+      </div>
+    </aside>
+
+    <!-- Мини-чат -->
+    <div id="chat" class="fixed right-[96px] top-1/2 -translate-y-1/2 z-50 w-full max-w-sm">
+      <div id="chatBox" class="hidden glass rounded-2xl shadow-2xl">
+        <div class="flex items-center justify-between border-b border-[rgba(0,0,0,.05)] p-3">
+          <div class="flex items-center gap-2">
+            <div class="h-8 w-8 rounded-full grid place-items-center bg-[var(--green)] text-white">✨</div>
+            <div>
+              <div class="text-sm font-semibold">Zaman AI</div>
+              <div class="text-xs text-emerald-900/70">Голос · Текст · RU/KZ/EN</div>
+            </div>
+          </div>
+          <button id="closeChat" class="glass-weak rounded-full px-3 py-1 text-xs hover:shadow">Скрыть</button>
+        </div>
+        <div id="chatHistory" class="max-h-64 space-y-3 overflow-y-auto p-3 text-sm">
+          <div class="flex justify-start">
+            <div class="max-w-[85%] rounded-2xl px-3 py-2 bg-white/85 border border-white">
+              Привет! Я мини-версия Zaman AI. Для полного экрана нажми «Начать разговор».
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 border-t border-[rgba(0,0,0,.05)] p-3">
+          <button class="glass-weak rounded-full p-2" title="Голос">🎤</button>
+          <input id="msg" class="flex-1 glass-weak rounded-xl px-3 py-2 text-sm outline-none" placeholder="Напишите сообщение...">
+          <button id="send" class="btn-solid rounded-xl px-4 py-2">Отправить</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bg-orbs -->
+
+  <!-- СКРИПТЫ -->
+  <script>
+  // Reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("show")),{threshold:.15});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+  // Quick suggestions
+  (function(){const quick=document.getElementById("quick"); if(!quick) return;
+    ["Составь план на квартиру","Разбери траты за месяц","Подбери халяль-депозит","Как снизить стресс без покупок?","Сравни мой профиль"].forEach(t=>{
+      const b=document.createElement("button"); b.className="glass-weak rounded-full px-3 py-1 text-xs hover:shadow"; b.textContent=t;
+      b.onclick=()=>document.getElementById("msg").value=t; quick.appendChild(b); });})();
+
+  // RIGHT DOCK: open mini chat
+  const chatLauncher=document.getElementById("chatLauncher");
+  const chatBox=document.getElementById("chatBox");
+  const closeChat=document.getElementById("closeChat");
+  const historyEl=document.getElementById("chatHistory");
+  chatLauncher.onclick=()=>{ const hidden=chatBox.classList.contains("hidden");
+    if(hidden){ chatBox.classList.remove("hidden"); requestAnimationFrame(()=>chatBox.classList.add("open")); }
+    else{ chatBox.classList.remove("open"); setTimeout(()=>chatBox.classList.add("hidden"),260); } };
+  closeChat.onclick=()=>{ chatBox.classList.remove("open"); setTimeout(()=>chatBox.classList.add("hidden"),260); };
+
+  function addBubble(role, text){
+    const w=document.createElement("div"); w.className="flex "+(role==="assistant"?"justify-start":"justify-end");
+    const b=document.createElement("div"); b.className="max-w-[85%] rounded-2xl px-3 py-2 bg-white/85 border border-white";
+    b.textContent=text; w.appendChild(b); historyEl.appendChild(w); historyEl.scrollTop=historyEl.scrollHeight;
+  }
+  function mockAssistant(t){
+    t=t.toLowerCase();
+    if(t.includes("квартир"))return"Давайте посчитаем: сумма цели, срок, ежемесячный взнос и таймлайн 📈";
+    if(t.includes("траты"))return"Разберу по категориям и предложу мягкую экономию 💡";
+    if(t.includes("депозит"))return"Подберу халяль-депозит под твой горизонт 🌙";
+    return"Я помогу с целями, расходами и халяль-продуктами 💬";
+  }
+  document.getElementById("send").onclick=()=>{const v=document.getElementById("msg").value.trim(); if(!v) return;
+    addBubble("user",v); document.getElementById("msg").value=""; setTimeout(()=>addBubble("assistant",mockAssistant(v)),220);};
+  document.getElementById("msg").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("send").click(); });
+
+  // Фоновые точки
+  const c=document.getElementById("space"),ctx=c.getContext("2d");
+  let w,h,px=window.devicePixelRatio||1; function rs(){ w=innerWidth; h=innerHeight; c.width=w*px; c.height=h*px; ctx.setTransform(px,0,0,px,0,0);} rs(); addEventListener("resize",rs);
+  const dots=Array.from({length:70},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,sz:Math.random()*2+.5}));
+  (function loop(){ requestAnimationFrame(loop); ctx.clearRect(0,0,w,h);
+    for(const d of dots){ d.x+=d.vx; d.y+=d.vy; if(d.x<0||d.x>w)d.vx*=-1; if(d.y<0||d.y>h)d.vy*=-1;
+      ctx.fillStyle="rgba(38,220,194,.45)"; ctx.beginPath(); ctx.arc(d.x,d.y,d.sz,0,Math.PI*2); ctx.fill(); } })();
+  </script>
+</body>
+</html>
