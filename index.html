@@ -14,31 +14,26 @@
   <link rel="manifest" href="https://new.zamanbank.kz/themes/zaman/assets/favicon/site.webmanifest"/>
   <title>ZAMAN AI — халяль-банкинг нового поколения</title>
 
-  <!-- их css (опционально) -->
   <link rel="stylesheet" href="https://new.zamanbank.kz/themes/zaman/assets/build/assets/css-Dt_kdDKu.css">
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root{
       --bg-0:#ffffff; --bg-1:#F5FFFB; --green:#26DCC2; --lime:#F7FF75;
       --ink:#0B2A23; --shadow:rgba(0,0,0,.07); --ring:rgba(12,42,35,.08);
-      /* для стека карт */
       --radius:22px; --cardW:540px; --cardH:320px;
     }
     html,body{height:100%}
     body{
-      /* FIX: убрали отрицательный offset в radial-gradient (at 10% 0%) */
       background: radial-gradient(160% 120% at 10% 0%, var(--bg-0) 10%, var(--bg-1) 60%, var(--bg-0) 100%);
       color:var(--ink);
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
     }
 
-    /* ===== Glass / Chips ===== */
+    /* ===== Glass / tokens ===== */
     .glass{ background:rgba(255,255,255,.78); border:1px solid rgba(255,255,255,.98); backdrop-filter: blur(22px); box-shadow:0 12px 26px var(--shadow); }
     .glass-weak{ background:rgba(255,255,255,.6); border:1px solid rgba(255,255,255,.9); backdrop-filter: blur(14px); box-shadow:0 8px 18px var(--shadow); }
-    .chip{ display:inline-flex; align-items:center; gap:.5rem; padding:.45rem .75rem; border-radius:999px; border:1px solid var(--ring); background:rgba(255,255,255,.88); font-size:.78rem; }
 
     /* ===== Header ===== */
     .nav-wrap{ position:sticky; top:0; z-index:40; }
@@ -57,27 +52,32 @@
     .headline strong{ background:linear-gradient(90deg,var(--green),var(--lime)); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .subline{ font-size:clamp(15px,1.35vw,18px); opacity:.92 }
 
+    /* аккуратная мета-строка вместо «кнопок» */
+    .meta{
+      margin-bottom:.75rem; font-size:13.5px; line-height:1.45;
+      color:rgba(11,42,35,.70); letter-spacing:.02em;
+    }
+
     /* ===== Buttons ===== */
     .btn-solid{ background:linear-gradient(90deg,var(--green),var(--lime)); color:#05372E; font-weight:700; border-radius:999px; border:1px solid rgba(255,255,255,.95); box-shadow:0 6px 16px rgba(38,220,194,.25); transition:transform .18s ease, box-shadow .18s ease; }
     .btn-solid:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(38,220,194,.34); }
     .btn-ghost{ background:rgba(255,255,255,.92); color:var(--ink); font-weight:600; border-radius:999px; border:1px solid var(--ring); box-shadow:0 4px 12px rgba(0,0,0,.04); transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
     .btn-ghost:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.06); background:#fff; }
 
-    /* ===== Right Dock ===== */
-    #chatDock{ position:fixed; right:22px; top:50%; transform:translateY(-50%); z-index:50; }
-    #chatDock .pill{
-      display:flex; flex-direction:column; align-items:center; gap:.5rem;
-      width:58px; padding:14px 10px; border-radius:999px; cursor:pointer;
-      background:linear-gradient(180deg,#ffffffee,#ffffffcc); border:1px solid rgba(0,0,0,.05);
-      box-shadow:0 8px 26px rgba(0,0,0,.06), 0 0 0 6px rgba(38,220,194,.10);
-      transition:transform .22s ease, box-shadow .22s ease;
+    /* ===== Chat FAB внизу справа ===== */
+    #chatDock{ position:fixed; right:16px; bottom:16px; top:auto; transform:none; z-index:50; }
+    #chatDock .pill{ width:auto; padding:0; border-radius:999px; background:transparent; border:none; box-shadow:none; display:flex; }
+    #chatDock .dot{
+      height:60px; width:60px; border-radius:50%; display:grid; place-items:center; color:#fff;
+      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #11cbb0 100%);
+      box-shadow:0 12px 28px rgba(0,0,0,.18), 0 0 0 6px rgba(38,220,194,.14);
+      cursor:pointer; transition:transform .2s ease, box-shadow .2s ease;
     }
-    #chatDock .pill:hover{ transform:translateX(-2px); box-shadow:0 12px 34px rgba(0,0,0,.08), 0 0 0 8px rgba(38,220,194,.14); }
-    #chatDock .dot{ height:28px; width:28px; border-radius:50%; display:grid; place-items:center; color:#fff; background: radial-gradient(circle at 30% 30%, #ffffff 0%, #11cbb0 100%); }
-    #chatDock .label{ writing-mode:vertical-rl; transform:rotate(180deg); letter-spacing:.12em; font-weight:800; font-size:.72rem; color:#05372E; }
+    #chatDock .dot:hover{ transform:translateY(-2px); box-shadow:0 16px 38px rgba(0,0,0,.22), 0 0 0 8px rgba(38,220,194,.18); }
+    #chatDock .label{ display:none; } /* скрыли вертикальную подпись */
 
     /* ===== Мини-чат ===== */
-    #chatBox{ transform-origin:100% 60%; opacity:0; transform:scale(.92) translateY(8px); clip-path:inset(12% 12% 12% 12% round 18px); transition:opacity .36s ease, transform .36s ease, clip-path .46s cubic-bezier(.2,.8,.2,1); }
+    #chatBox{ transform-origin:100% 100%; opacity:0; transform:scale(.92) translateY(8px); clip-path:inset(12% 12% 12% 12% round 18px); transition:opacity .36s ease, transform .36s ease, clip-path .46s cubic-bezier(.2,.8,.2,1); }
     #chatBox.open{ opacity:1; transform:scale(1) translateY(0); clip-path:inset(0 0 0 0 round 18px); box-shadow:0 20px 60px rgba(0,0,0,.12), 0 0 60px rgba(38,220,194,.24); }
 
     /* ===== Reveal/bg ===== */
@@ -87,9 +87,9 @@
     .bg-orbs:before{ background:radial-gradient(closest-side, var(--green), transparent 60%); left:-10vmax; top:-10vmax; }
     .bg-orbs:after{ background:radial-gradient(closest-side, var(--lime), transparent 60%); right:-10vmax; bottom:-10vmax; }
 
-    @media (max-width:860px){ .hero-copy::before{ inset:-12px -14px; } #chatDock{ right:12px; } }
+    @media (max-width:860px){ .hero-copy::before{ inset:-12px -14px; } }
 
-    /* ===================== СТЕК КАРТ С ЛОГОТИПАМИ ===================== */
+    /* ====== Cards stack ====== */
     .stack{ position:relative; width:min(92vw,var(--cardW)); height:clamp(300px, 48vw, calc(var(--cardH) + 120px)); padding-top:92px; margin-inline:auto; }
     .card{ position:absolute; inset:auto 0 0 0; margin:auto; width:100%; height:var(--cardH); border-radius:var(--radius);
       padding:26px; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; justify-content:space-between;
@@ -106,7 +106,6 @@
     .number{ font-size:16px; letter-spacing:.28em; margin-top:6px; opacity:.95 }
     .chip{ width:38px; height:28px; border-radius:6px; background:linear-gradient(180deg,#dfe5ee,#a8b0bd); box-shadow:inset 0 0 0 1px rgba(0,0,0,.2), 0 6px 14px rgba(0,0,0,.2); }
 
-    /* FIX: корректные color-stops для «холо» */
     .holo{
       width:14px; height:14px; border-radius:50%; margin-left:6px;
       background:
@@ -120,20 +119,20 @@
     .mark{ position:absolute; inset:auto -40px -40px auto; right:-24px; bottom:-24px; width:320px; height:320px; opacity:.10; pointer-events:none; filter:drop-shadow(0 10px 20px rgba(0,0,0,.2)); }
     .divider{ height:1px; width:100%; background:linear-gradient(90deg,#ffffff33,#ffffff11,#0000); margin:.2rem 0 .6rem; opacity:.7 }
 
-    /* Темы карт */
     .theme-neon{ color:#E8FFF3; background:radial-gradient(120% 100% at 100% 0%, #00ff8a18 0%, #0000 40%), radial-gradient(120% 110% at 0% 100%, #00ff6a22 0%, #0000 58%), linear-gradient(135deg,#072e22,#041a14 68%); outline:1px solid #00f08a66; box-shadow:0 10px 38px #00ff8a22, inset 0 0 30px #00ff7a11, inset 0 0 120px #00ff7a08; }
-    .theme-neon .badge{ border-color:#00ffb055; background:#00ff8a13; color:#9bffd1 }
-    .theme-neon .holder{ text-shadow:0 0 16px #00ff8a55 }
-
     .theme-black{ color:#e9edf1; background:radial-gradient(100% 140% at 0% 0%, #ffffff09 0%, #0000 38%), linear-gradient(160deg,#0e1013,#121418 40%,#0b0c0e 100%); }
     .theme-black .badge{ background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.12); color:#ccd2d9 }
-
     .theme-mint{ color:#123a22; background:radial-gradient(120% 80% at 90% 0%, #ffffffaa 0%, #ffffff30 38%, #ffffff00 60%), linear-gradient(140deg,#b7f6c8,#a0f0b8 40%, #7ee6a3 100%); box-shadow:0 18px 42px rgba(56,140,86,.18), inset 0 0 0 1px rgba(0,0,0,.06); }
     .theme-mint .badge{ background:#ffffff66; border-color:#ffffffaa; color:#215b37 }
     .theme-mint .chip{ background:linear-gradient(180deg,#f2f7fb,#c9d2dd) }
+
+    /* Мобайл-твики */
+    @media (max-width:640px){
+      .meta{ font-size:12.5px; }
+      #chat{ right:16px; left:auto; top:auto; bottom:92px; transform:none; }
+    }
   </style>
 </head>
-
 <body>
   <canvas id="space"></canvas>
   <div class="bg-orbs selection:bg-[var(--green)]/20">
@@ -162,7 +161,7 @@
         <div class="flex items-center gap-3">
           <img src="https://new.zamanbank.kz/themes/zaman/assets/favicon/favicon.svg" class="h-9 w-9 rounded-xl bg-[var(--green)] p-2 ring-2 ring-[var(--lime)]/60" alt="Zaman">
           <div class="wordmark flex items-baseline gap-1"><span>ZAMAN</span><span>AI</span></div>
-          <span class="chip hidden md:inline-flex">Халяль-банкинг нового поколения</span>
+          <!-- удалён слоган-chip -->
         </div>
         <nav class="hidden md:flex items-center gap-2 text-emerald-900/85">
           <button class="rounded-full px-3 py-2 hover:bg-black/5">Частным клиентам ▾</button>
@@ -181,10 +180,8 @@
     <section class="mx-auto max-w-7xl px-4 md:px-6 py-10 md:py-14 grid lg:grid-cols-2 gap-10 items-center">
       <!-- ЛЕВАЯ КОЛОНКА -->
       <div class="hero-copy">
-        <div class="mb-4 flex flex-wrap items-center gap-2">
-          <span class="chip">Шариатские принципы</span>
-          <span class="chip">Голос · Текст · RU/KZ/EN</span>
-        </div>
+        <!-- НОВАЯ тонкая мета-строка -->
+        <div class="meta">Шариатские принципы · Голос/Текст · RU/KZ/EN</div>
 
         <h1 class="headline">
           <strong>ZAMAN AI</strong> — ваш&nbsp;халяль-навигатор по&nbsp;финансам
@@ -215,14 +212,12 @@
               <span class="brand">ZAMAN BANK</span>
             </div>
             <div class="row"><div class="chip"></div><div class="holo"></div></div>
-
             <div class="divider"></div>
             <div>
               <div class="label">CARD HOLDER</div>
               <div class="holder">ZAMAN USER</div>
               <div class="number">**** **** **** 5284</div>
             </div>
-
             <div class="emblem" style="background:linear-gradient(180deg,#00ff8a22,#00e07a10)">
               <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#icon-mountain"/></svg>
             </div>
@@ -238,14 +233,12 @@
               <span class="brand">PLATINUM</span>
             </div>
             <div class="row"><div class="chip"></div><div class="holo"></div></div>
-
             <div class="divider"></div>
             <div>
               <div class="label">CARD HOLDER</div>
               <div class="holder">ZAMAN USER</div>
               <div class="number">**** **** **** 5284</div>
             </div>
-
             <div class="emblem" style="background:linear-gradient(180deg,#ffffff22,#ffffff08)">
               <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#icon-eagle"/></svg>
             </div>
@@ -261,14 +254,12 @@
               <span class="brand">DEBIT</span>
             </div>
             <div class="row"><div class="chip"></div><div class="holo"></div></div>
-
             <div class="divider"></div>
             <div>
               <div class="label">CARD HOLDER</div>
               <div class="holder">ZAMAN USER</div>
               <div class="number">**** **** **** 5284</div>
             </div>
-
             <div class="emblem" style="background:linear-gradient(180deg,#ffffffaa,#ffffff55)">
               <svg viewBox="0 0 64 64" aria-hidden="true" style="color:#1f6b3f"><use href="#icon-leaf"/></svg>
             </div>
@@ -320,16 +311,15 @@
       </div>
     </footer>
 
-    <!-- ПРАВЫЙ ДОК -->
+    <!-- FAB Zaman AI (внизу справа) -->
     <aside id="chatDock">
       <div id="chatLauncher" class="pill">
         <div class="dot">✨</div>
-        <div class="label">ZAMAN&nbsp;AI</div>
       </div>
     </aside>
 
     <!-- Мини-чат -->
-    <div id="chat" class="fixed right-[96px] top-1/2 -translate-y-1/2 z-50 w-full max-w-sm">
+    <div id="chat" class="fixed right-4 bottom-[92px] z-50 w-full max-w-sm">
       <div id="chatBox" class="hidden glass rounded-2xl shadow-2xl">
         <div class="flex items-center justify-between border-b border-[rgba(0,0,0,.05)] p-3">
           <div class="flex items-center gap-2">
@@ -370,7 +360,7 @@
       const b=document.createElement("button"); b.className="glass-weak rounded-full px-3 py-1 text-xs hover:shadow"; b.textContent=t;
       b.onclick=()=>document.getElementById("msg").value=t; quick.appendChild(b); });})();
 
-  // RIGHT DOCK: open mini chat
+  // FAB: open mini chat
   const chatLauncher=document.getElementById("chatLauncher");
   const chatBox=document.getElementById("chatBox");
   const closeChat=document.getElementById("closeChat");

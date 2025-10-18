@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Вход — Zaman AI Bank</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{ --green:#26DCC2; --lime:#F7FF75; --ink:#0A2B23; }
+  body{
+    min-height:100svh; margin:0; color:var(--ink);
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: radial-gradient(140% 120% at 10% 0%, #ffffff 10%, #F3FFFB 50%, #ffffff 100%);
+  }
+  .glass{ background:rgba(255,255,255,.86); backdrop-filter:blur(22px);
+    border:1px solid rgba(255,255,255,.98); box-shadow:0 18px 48px rgba(0,0,0,.08); }
+  .btn{ background:linear-gradient(90deg,var(--green),var(--lime)); color:#05372E; font-weight:700;
+    border-radius:14px; border:1px solid rgba(255,255,255,.95); box-shadow:0 8px 20px rgba(38,220,194,.25); }
+  .input{
+    background:#fff; border:1px solid rgba(10,43,35,.12); border-radius:14px;
+    padding:.85rem 1rem; outline:none; width:100%;
+  }
+  .input:focus{ border-color:rgba(38,220,194,.6); box-shadow:0 0 0 4px rgba(38,220,194,.15)}
+  .eye{ position:absolute; right:.6rem; top:50%; transform:translateY(-50%); opacity:.6; cursor:pointer; }
+  .brand{ letter-spacing:.18em; font-weight:800; }
+</style>
+</head>
+<body class="grid place-items-center px-4 py-10">
+
+  <a href="index.html" class="fixed left-3 top-3 rounded-full px-3 py-1 text-sm bg-white/80 border border-black/5 hover:bg-white">← На главную</a>
+
+  <main class="w-full max-w-sm">
+    <div class="glass rounded-2xl p-6 md:p-8">
+      <div class="mx-auto mb-4 grid place-items-center h-14 w-14 rounded-xl bg-[var(--green)] text-white shadow-lg">
+        <!-- логотип -->
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+          <path d="M7 3a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1v4a3 3 0 1 0 6 0v-4h1a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H7zM8 5h8v4H8V5z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-center">Вход в <span class="brand">ZAMAN&nbsp;AI</span> Bank</h1>
+
+      <form class="mt-6 space-y-4" onsubmit="return submitLogin(event)">
+        <div>
+          <label class="block text-sm mb-1">Логин</label>
+          <input id="login" class="input" placeholder="email или телефон" autocomplete="username" required>
+        </div>
+
+        <div class="relative">
+          <label class="block text-sm mb-1">Пароль</label>
+          <input id="password" type="password" class="input pr-10" placeholder="Ваш пароль" autocomplete="current-password" required minlength="6">
+          <button type="button" class="eye" onclick="toggle('password', this)" title="Показать/скрыть">👁️</button>
+        </div>
+
+        <button class="btn w-full py-3">Войти</button>
+      </form>
+
+      <div class="mt-4 text-center text-sm">
+        Нет аккаунта?
+        <a class="underline decoration-[var(--green)] decoration-2 underline-offset-4 hover:text-emerald-700"
+           href="register.html">Регистрация</a>
+      </div>
+    </div>
+  </main>
+
+<script>
+  function toggle(id, el){
+    const i=document.getElementById(id);
+    i.type = i.type === 'password' ? 'text' : 'password';
+    el.style.opacity = i.type==='password'?.6:.9;
+  }
+  function submitLogin(e){
+    e.preventDefault();
+    const login=document.getElementById('login').value.trim();
+    const pwd=document.getElementById('password').value;
+    if(!login || !pwd){ alert('Заполните поля'); return false; }
+    // здесь будет реальный запрос к API, сейчас просто редирект:
+    location.href='index.html';
+    return false;
+  }
+</script>
+</body>
+</html>
